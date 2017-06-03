@@ -44,11 +44,11 @@ GeneticAlgorithm.prototype.mutate = function(locations, p) {
 // passes that route to child
 // then iterate through second parent's route to fill in
 // MAINTAINS ORDER
-// returns array(2) of route arrays
+// takes two individuals
 // now returns two Individuals with crossed DNA
-GeneticAlgorithm.prototype.crossover = function(mom, dad) {
-  let segmentStart = Math.floor(mom.length * Math.random());
-  let segmentEnd = Math.floor(dad.length * Math.random());
+Population.prototype.crossover = function(mom, dad) {
+  let segmentStart = Math.floor(mom.dna.length * Math.random());
+  let segmentEnd = Math.floor(dad.dna.length * Math.random());
 
   if ( segmentStart > segmentEnd ) {
     const temp = segmentStart;
@@ -73,8 +73,6 @@ function createCrossed (startInd, endInd, segParent, otherParent) {
     const parentLoc = otherParent[parentIndex];
     if (!segment.some(location => sameLocation(location, parentLoc))) {
       fillOnce(offspring, parentLoc);
-    } else {
-      console.log('SAME LOCATION');
     }
   }
 

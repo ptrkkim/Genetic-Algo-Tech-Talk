@@ -1,10 +1,48 @@
-function Population (pC, pM) {
-  this.currentPop = [];
-  this.currentFitnesses = [];
+var canvas = document.getElementById("myCanvas");
+var ctx = canvas.getContext("2d");
+
+var data1 = [{"x":116,"y":404},{"x":161,"y":617},{"x":16,"y":97},{"x":430,"y":536},{"x":601,"y":504},{"x":425,"y":461},{"x":114,"y":544},{"x":127,"y":118},{"x":163,"y":357},{"x":704,"y":104},{"x":864,"y":125},{"x":847,"y":523},{"x":742,"y":170},{"x":204,"y":601},{"x":421,"y":377},{"x":808,"y":49},{"x":860,"y":466},{"x":844,"y":294},{"x":147,"y":213},{"x":550,"y":124},{"x":238,"y":313},{"x":57,"y":572},{"x":664,"y":190},{"x":612,"y":644},{"x":456,"y":154},{"x":120,"y":477},{"x":542,"y":313},{"x":620,"y":29},{"x":245,"y":246},{"x":611,"y":578},{"x":627,"y":373},{"x":534,"y":286},{"x":577,"y":545},{"x":539,"y":340},{"x":794,"y":328},{"x":855,"y":139},{"x":700,"y":47},{"x":275,"y":593},{"x":130,"y":196},{"x":863,"y":35}];
+var pC = .5;
+var pM = .1;
+
+function runAlgorithm () {
+  const population = new Population(10, data1, pC, pM);
+
+  // evolve population, pull out and draw the fittest
+  function tick() {
+    population.nextGen();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    population.getFittest().draw(ctx);
+  }
+
+  setInterval(tick, 500);
+}
+
+function seedCanvas(thisctx, locations) {
+  locations.forEach(location => {
+    thisctx.fillRect(location.x, location.y, 5, 5);
+  });
+}
+
+seedCanvas(ctx, data1);
+setTimeout(runAlgorithm, 5000);
+// produce new population, draw the fittest
+
+function Population (size, seed, pC, pM) {
+  this.currentPop = this.generate(size, seed);
+  this.currentFitnesses = this.currentPop.map(individual => individual.getFitness());
   this.probCross = pC;
   this.probMuta = pM;
 }
 
+// all members of a population MUST HAVE SAME LOCATIONS
+// thus generate a pop by shuffling a single set of locations
+Population.prototype.generate = function (size, seed) {
+  return Array(size).fill(null).map( () => new Individual(shuffle(seed)) );
+};
+
+// creates next generation for a population
+// updates currentPop, currentFitnesses, returns modified population object
 Population.prototype.nextGen = function () {
   let evolvedPop = [];
   while (evolvedPop.length < this.currentPop.length) {
@@ -62,10 +100,10 @@ Population.prototype.crossover = function (mom, dad) {
 
 // returns fittest individual
 Population.prototype.getFittest = function () {
-  const fittestIndex = this.fitnesses.reduce((fittestInd, currentScore, i, scores) => {
+  const fittestIndex = this.currentFitnesses.reduce((fittestInd, currentScore, i, scores) => {
     if (currentScore > scores[fittestInd]) return i;
     return fittestInd;
-  });
+  }, 0);
 
   return this.currentPop[fittestIndex];
 };
@@ -87,6 +125,31 @@ function orderedCross (startInd, endInd, segParent, otherParent) {
   }
 
   return crossedDNA;
+}
+
+function sameLocation (location1, location2) {
+  return location1.x === location2.x && location1.y === location2.y;
+}
+
+function fillOnce(offspring, locToInsert) {
+  const insertAt = offspring.indexOf(null);
+  if (insertAt === -1) {
+    console.log('already filled?????');
+  } else {
+    offspring[insertAt] = locToInsert;
+  }
+}
+
+function shuffle(array) {
+    var rand, index = -1,
+        length = array.length,
+        result = Array(length);
+    while (++index < length) {
+        rand = Math.floor(Math.random() * (index + 1));
+        result[index] = result[rand];
+        result[rand] = array[index];
+    }
+    return result;
 }
 
 function Individual (dna) {
@@ -113,22 +176,20 @@ Individual.prototype.getFitness = function () {
   return distanceFitness(this.dna);
 };
 
-function fillOnce(offspring, locToInsert) {
-  const insertAt = offspring.indexOf(null);
-  if (insertAt === -1) {
-    console.log('already filled?????');
-  } else {
-    offspring[insertAt] = locToInsert;
-  }
-}
+Individual.prototype.draw = function (ctx) {
+  this.dna.forEach((point, index) => {
+    if (index === 0) {
+      ctx.moveTo(point.x, point.y);
+    }
+    else if (index === this.dna.length - 1) {
+      ctx.lineTo(this.dna[0].x, this.dna[0].y);
+    } else {
+      ctx.lineTo(point.x, point.y);
+    }
+  });
 
-Individual.prototype.draw = function (workingCtx) {
-
+  ctx.stroke();
 };
-
-function sameLocation (location1, location2) {
-  return location1.x === location2.x && location1.y === location2.y;
-}
 
 function distanceFitness (route) {
   let prev = route[0];

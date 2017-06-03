@@ -1,10 +1,32 @@
-function Population (pC, pM) {
-  this.currentPop = [];
-  this.currentFitnesses = [];
+const Individual = require('./Individual');
+
+module.exports = Population;
+// at start
+// generate random set of points based on canvas size
+// create new Population of size x
+// this population's initial pop is an array with the points, shuffled
+
+// for now hardcode
+// size = 10
+// seed = data1;
+// pc = .6
+// pm = .1
+
+function Population (size, seed, pC, pM) {
+  this.currentPop = this.generate(size, seed);
+  this.currentFitnesses = this.currentPop.map(individual => individual.getFitness());
   this.probCross = pC;
   this.probMuta = pM;
 }
 
+// all members of a population MUST HAVE SAME LOCATIONS
+// thus generate a pop by shuffling a single set of locations
+Population.prototype.generate = function (size, seed) {
+  return Array(size).fill(null).map( () => new Individual(shuffle(seed)) );
+};
+
+// creates next generation for a population
+// updates currentPop, currentFitnesses, returns modified population object
 Population.prototype.nextGen = function () {
   let evolvedPop = [];
   while (evolvedPop.length < this.currentPop.length) {
@@ -62,7 +84,7 @@ Population.prototype.crossover = function (mom, dad) {
 
 // returns fittest individual
 Population.prototype.getFittest = function () {
-  const fittestIndex = this.fitnesses.reduce((fittestInd, currentScore, i, scores) => {
+  const fittestIndex = this.currentFitnesses.reduce((fittestInd, currentScore, i, scores) => {
     if (currentScore > scores[fittestInd]) return i;
     return fittestInd;
   });
@@ -89,29 +111,9 @@ function orderedCross (startInd, endInd, segParent, otherParent) {
   return crossedDNA;
 }
 
-function Individual (dna) {
-  this.dna = dna || [];
+function sameLocation (location1, location2) {
+  return location1.x === location2.x && location1.y === location2.y;
 }
-
-// NON MUTATING
-// returns plain dna
-Individual.prototype.mutate = function (pM) {
-  const mutatedRoute = this.dna.slice();
-  for (let index in mutatedRoute) {
-    if (pM > Math.random()) {
-      const randInd = Math.floor(Math.random() * mutatedRoute.length);
-      const tempLoc = mutatedRoute[randInd];
-      mutatedRoute[randInd] = mutatedRoute[index];
-      mutatedRoute[index] = tempLoc;
-    }
-  }
-
-  return mutatedRoute;
-};
-
-Individual.prototype.getFitness = function () {
-  return distanceFitness(this.dna);
-};
 
 function fillOnce(offspring, locToInsert) {
   const insertAt = offspring.indexOf(null);
@@ -122,26 +124,15 @@ function fillOnce(offspring, locToInsert) {
   }
 }
 
-Individual.prototype.draw = function (workingCtx) {
-
-};
-
-function sameLocation (location1, location2) {
-  return location1.x === location2.x && location1.y === location2.y;
+function shuffle(array) {
+    var rand, index = -1,
+        length = array.length,
+        result = Array(length);
+    while (++index < length) {
+        rand = Math.floor(Math.random() * (index + 1));
+        result[index] = result[rand];
+        result[rand] = array[index];
+    }
+    return result;
 }
 
-function distanceFitness (route) {
-  let prev = route[0];
-  let distance = route.reduce((totalDist, location) => {
-    const distToAdd = Math.hypot(location.x - prev.x, location.y - prev.y);
-    prev = location;
-    return distToAdd;
-  }, 0);
-
-  // make circular
-  const first = route[0];
-  const last = route[route.length - 1];
-  distance += Math.hypot(first.x - last.x, first.y - last.y);
-
-  return 1 / distance;
-}
