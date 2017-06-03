@@ -25,18 +25,21 @@ Individual.prototype.getFitness = function () {
 };
 
 Individual.prototype.draw = function (ctx) {
+  ctx.beginPath();
+  console.log(this.dna);
   this.dna.forEach((point, index) => {
     if (index === 0) {
       ctx.moveTo(point.x, point.y);
-    }
-    else if (index === this.dna.length - 1) {
-      ctx.lineTo(this.dna[0].x, this.dna[0].y);
     } else {
       ctx.lineTo(point.x, point.y);
     }
   });
 
+  // close the path
+
+  ctx.lineTo(this.dna[0].x, this.dna[0].y);
   ctx.stroke();
+  ctx.closePath();
 };
 
 function distanceFitness (route) {
@@ -44,7 +47,8 @@ function distanceFitness (route) {
   let distance = route.reduce((totalDist, location) => {
     const distToAdd = Math.hypot(location.x - prev.x, location.y - prev.y);
     prev = location;
-    return distToAdd;
+
+    return totalDist + distToAdd;
   }, 0);
 
   // make circular

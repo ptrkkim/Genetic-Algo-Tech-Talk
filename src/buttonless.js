@@ -1,21 +1,56 @@
+<body>
+
+<canvas id="myCanvas" width="500" height="500"
+style="border:1px solid #d3d3d3;">
+Your browser does not support the canvas element.
+</canvas>
+<button id="next">
+Next
+</button>
+<button id="stop">
+Stop
+</button>
+<button id="go">
+Go
+</button>
+</body>
+
+
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
 
 var data1 = [{"x":116,"y":404},{"x":161,"y":617},{"x":16,"y":97},{"x":430,"y":536},{"x":601,"y":504},{"x":425,"y":461},{"x":114,"y":544},{"x":127,"y":118},{"x":163,"y":357},{"x":704,"y":104},{"x":864,"y":125},{"x":847,"y":523},{"x":742,"y":170},{"x":204,"y":601},{"x":421,"y":377},{"x":808,"y":49},{"x":860,"y":466},{"x":844,"y":294},{"x":147,"y":213},{"x":550,"y":124},{"x":238,"y":313},{"x":57,"y":572},{"x":664,"y":190},{"x":612,"y":644},{"x":456,"y":154},{"x":120,"y":477},{"x":542,"y":313},{"x":620,"y":29},{"x":245,"y":246},{"x":611,"y":578},{"x":627,"y":373},{"x":534,"y":286},{"x":577,"y":545},{"x":539,"y":340},{"x":794,"y":328},{"x":855,"y":139},{"x":700,"y":47},{"x":275,"y":593},{"x":130,"y":196},{"x":863,"y":35}];
+var smaller = data1.map(loc => ({x: loc.x / 2, y: loc.y / 2}));
+// var smaller = [
+// {x: 50, y: 50},
+// {x: 150, y: 50},
+// {x: 150, y: 150},
+// {x: 50, y: 150},
+// ];
+
 var pC = .5;
 var pM = .1;
 
+let ourPopulation;
+
 function runAlgorithm () {
-  const population = new Population(10, data1, pC, pM);
+  ourPopulation = new Population(10, smaller, pC, pM);
 
   // evolve population, pull out and draw the fittest
   function tick() {
-    population.nextGen();
+    ourPopulation.nextGen();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    population.getFittest().draw(ctx);
+    seedCanvas(ctx, smaller);
+    ourPopulation.getFittest().draw(ctx);
+    console.log('fittest: ', ourPopulation.getFittest().getFitness());
   }
 
-  setInterval(tick, 500);
+  let interval;
+  document.getElementById('next').addEventListener('click', tick);
+  document.getElementById('go').addEventListener('click', () => {
+    interval = setInterval(tick, 0);
+  });
+  document.getElementById('stop').addEventListener('click', () => { clearInterval(interval); });
 }
 
 function seedCanvas(thisctx, locations) {
@@ -24,8 +59,8 @@ function seedCanvas(thisctx, locations) {
   });
 }
 
-seedCanvas(ctx, data1);
-setTimeout(runAlgorithm, 5000);
+seedCanvas(ctx, smaller);
+setTimeout(runAlgorithm, 500);
 // produce new population, draw the fittest
 
 function Population (size, seed, pC, pM) {
@@ -177,18 +212,21 @@ Individual.prototype.getFitness = function () {
 };
 
 Individual.prototype.draw = function (ctx) {
+  ctx.beginPath();
+  console.log(this.dna);
   this.dna.forEach((point, index) => {
     if (index === 0) {
       ctx.moveTo(point.x, point.y);
-    }
-    else if (index === this.dna.length - 1) {
-      ctx.lineTo(this.dna[0].x, this.dna[0].y);
     } else {
       ctx.lineTo(point.x, point.y);
     }
   });
 
+  // close the path
+
+  ctx.lineTo(this.dna[0].x, this.dna[0].y);
   ctx.stroke();
+  ctx.closePath();
 };
 
 function distanceFitness (route) {
@@ -196,7 +234,8 @@ function distanceFitness (route) {
   let distance = route.reduce((totalDist, location) => {
     const distToAdd = Math.hypot(location.x - prev.x, location.y - prev.y);
     prev = location;
-    return distToAdd;
+
+    return totalDist + distToAdd;
   }, 0);
 
   // make circular
