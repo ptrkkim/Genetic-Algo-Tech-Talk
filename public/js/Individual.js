@@ -28,7 +28,6 @@ Individual.prototype.getFitness = function () {
 };
 
 Individual.prototype.draw = function (ctx) {
-  
   drawLocations(ctx, this.dna);
   drawRoute(ctx, this.dna);
 };
@@ -43,10 +42,8 @@ function drawRoute (ctx, locations) {
     }
   });
 
-  // close the path
-  ctx.lineTo(locations[0].x, locations[0].y);
-  ctx.stroke();
   ctx.closePath();
+  ctx.stroke();
 }
 
 function drawLocations(ctx, locations) {

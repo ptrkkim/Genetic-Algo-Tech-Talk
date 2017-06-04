@@ -1,23 +1,48 @@
 const Population = require('./Population');
-const seed = require('./data');
+const defaultSeed = require('./data');
+// import?
 // controls
 
 // HTML ALREADY EXISTS
 // ATTACH step, play/pause, restart
 
-function initButtons (population) {
+function initCanvas (population) {
   const gCanvas = document.getElementById('genetic');
-  const gCtx = gCanvas.getContext('2d');
   const fCanvas = document.getElementById('fitness');
+  const gCtx = gCanvas.getContext('2d');
   const fCtx = fCanvas.getContext('2d');
 
-  const tick = makePopTick(gCanvas, gCtx, fCtx, population);
-  let tickInterval;
+  const tickFunc = makePopTick(gCanvas, gCtx, fCtx, population);
+  initButtons(tickFunc);
 
+  const seed = null || defaultSeed;
+  clearCanvas(gCtx, gCanvas);
+  clearCanvas(fCtx, fCanvas);
+  drawLocations(gCtx, seed);
+
+}
+
+function drawLocations(ctx, locations) {
+  const pxSize = 5;
+  const offset = pxSize / 2;
+  locations.forEach(location => {
+    ctx.fillRect(location.x - offset, location.y - offset, pxSize, pxSize);
+  });
+}
+
+function clearCanvas(ctx, canvas) {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+}
+
+function initButtons(tick) {
   const step = document.getElementById('step');
   const go = document.getElementById('go');
   const stop = document.getElementById('stop');
   const reset = document.getElementById('reset');
+
+  let tickInterval;
 
   step.addEventListener('click', tick);
   go.addEventListener('click', () => { tickInterval = setInterval(tick, 0); });
@@ -33,7 +58,6 @@ function initButtons (population) {
     tickInterval = null;
   }
 }
-
 
 function clearListeners (...domNodes) {
   domNodes.forEach(domElement => {
@@ -65,6 +89,7 @@ function newCohort () {
   const size = 50;
   const pC = 0.8;
   const pM = 0.01;
+  const seed = null || defaultSeed;
   const population = new Population(size, seed, pC, pM);
 
   return population;
@@ -77,51 +102,8 @@ function drawFitness(ctx, xAxis, score) {
 
 function setup () {
   const population = newCohort();
-  initButtons(population);
+  initCanvas(population);
+
 }
 
 setup();
-
-// for use by front-end buttons
-// evolve population once, pull out and draw the fittest
-// function tick (population) {
-//   population.nextGen();
-//   population.genNumber += 1;
-
-//   const fittest = population.getFittest();
-//   population.fittestEver = fittest.getFitness() > population.fittestEver.getFitness()
-//     ? fittest
-//     : population.fittestEver;
-
-//   fittest.draw(gCtx);
-//   gCtx.clearRect(0, 0, gCanvas.width, gCanvas.height);
-
-// // }
-
-// function runAlgorithm () {
-//   ourPopulation = new Population(pC, pM);
-//   ourPopulation.currentPop = ourPopulation.generate(popSize, seed);
-//   ourPopulation.currentFitnesses = ourPopulation.currentPop.map(individual => individual.getFitness());
-
-//   // evolve population, pull out and draw the fittest
-//   function tick() {
-//     ourPopulation.nextGen();
-//     genNumber += 1;
-
-//     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//     seedCanvas(ctx, smaller);
-//     ourPopulation.getFittest().draw(ctx);
-//     const highScore = ourPopulation.getFittest().getFitness();
-//     highest = (highScore > highest) ? highScore : highest;
-//     console.log('BEST: ', highest, 'current Fittest: ', highScore);
-//     drawFitness(genNumber, highScore);
-
-//   }
-
-//   let interval;
-//   document.getElementById('next').addEventListener('click', tick);
-//   document.getElementById('go').addEventListener('click', () => {
-//     interval = setInterval(tick, 0);
-//   });
-//   document.getElementById('stop').addEventListener('click', () => { clearInterval(interval); });
-// }
