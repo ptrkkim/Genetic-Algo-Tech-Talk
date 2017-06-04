@@ -17,6 +17,8 @@ function Population (size, seed, pC, pM) {
   this.currentFitnesses = this.currentPop.map(individual => individual.getFitness());
   this.probCross = pC;
   this.probMuta = pM;
+  this.genNumber = 0;
+  this.fittestEver = null;
 }
 
 // all members of a population MUST HAVE SAME LOCATIONS
@@ -29,6 +31,7 @@ Population.prototype.generate = function (size, seed) {
 // updates currentPop, currentFitnesses, returns modified population object
 Population.prototype.nextGen = function () {
   let evolvedPop = [];
+
   while (evolvedPop.length < this.currentPop.length) {
     evolvedPop = [...evolvedPop, ...this.haveTwoChildren()];
   }
@@ -50,7 +53,7 @@ Population.prototype.haveTwoChildren = function () {
       : [mom, dad];
 
   const mutatedChildren = possiblyCrossed.map(individual => {
-      return new Individual(individual.mutate(this.probMuta));
+      return individual.mutate(this.probMuta);
     });
   return mutatedChildren;
 };

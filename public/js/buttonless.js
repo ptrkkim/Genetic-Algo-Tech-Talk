@@ -1,58 +1,39 @@
-<body>
-
-<canvas id="myCanvas" width="500" height="500"
-style="border:1px solid #d3d3d3;">
-Your browser does not support the canvas element.
-</canvas>
-<div style="width: 500px; overflow: scroll">
-  <canvas id="fitness" width="5000" height="250"
-  style="border:1px solid #d3d3d3;">
-  </canvas>
-</div>
-<button id="next">
-Next
-</button>
-<button id="stop">
-Stop
-</button>
-<button id="go">
-Go
-</button>
-</body>
 
 
-var canvas = document.getElementById("myCanvas");
+
+var canvas = document.getElementById("genetic");
 var ctx = canvas.getContext("2d");
 
 var canfit = document.getElementById('fitness');
 var ctxfit = canfit.getContext("2d");
 
-var data1 = [{"x":116,"y":404},{"x":161,"y":617},{"x":16,"y":97},{"x":430,"y":536},{"x":601,"y":504},{"x":425,"y":461},{"x":114,"y":544},{"x":127,"y":118},{"x":163,"y":357},{"x":704,"y":104},{"x":864,"y":125},{"x":847,"y":523},{"x":742,"y":170},{"x":204,"y":601},{"x":421,"y":377},{"x":808,"y":49},{"x":860,"y":466},{"x":844,"y":294},{"x":147,"y":213},{"x":550,"y":124},{"x":238,"y":313},{"x":57,"y":572},{"x":664,"y":190},{"x":612,"y":644},{"x":456,"y":154},{"x":120,"y":477},{"x":542,"y":313},{"x":620,"y":29},{"x":245,"y":246},{"x":611,"y":578},{"x":627,"y":373},{"x":534,"y":286},{"x":577,"y":545},{"x":539,"y":340},{"x":794,"y":328},{"x":855,"y":139},{"x":700,"y":47},{"x":275,"y":593},{"x":130,"y":196},{"x":863,"y":35}];
-var smaller = data1.map(loc => ({x: loc.x / 2, y: loc.y / 2}));
-// var smaller = [
-// {x: 50, y: 50},
-// {x: 150, y: 150},
-// {x: 150, y: 100},
-// {x: 75, y: 150},
-// {x: 125, y: 50},
-// {x: 50, y: 125},
-// {x: 150, y: 125},
-// {x: 50, y: 150},
-// {x: 50, y: 75},
-// {x: 150, y: 50},
-// ];
+//var data1 = [{"x":116,"y":404},{"x":161,"y":617},{"x":16,"y":97},{"x":430,"y":536},{"x":601,"y":504},{"x":425,"y":461},{"x":114,"y":544},{"x":127,"y":118},{"x":163,"y":357},{"x":704,"y":104},{"x":864,"y":125},{"x":847,"y":523},{"x":742,"y":170},{"x":204,"y":601},{"x":421,"y":377},{"x":808,"y":49},{"x":860,"y":466},{"x":844,"y":294},{"x":147,"y":213},{"x":550,"y":124},{"x":238,"y":313},{"x":57,"y":572},{"x":664,"y":190},{"x":612,"y":644},{"x":456,"y":154},{"x":120,"y":477},{"x":542,"y":313},{"x":620,"y":29},{"x":245,"y":246},{"x":611,"y":578},{"x":627,"y":373},{"x":534,"y":286},{"x":577,"y":545},{"x":539,"y":340},{"x":794,"y":328},{"x":855,"y":139},{"x":700,"y":47},{"x":275,"y":593},{"x":130,"y":196},{"x":863,"y":35}];
+//var smaller = data1.map(loc => ({x: loc.x / 2, y: loc.y / 2}));
+var smaller = [
+{x: 50, y: 50},
+{x: 50, y: 100},
+{x: 50, y: 150},
+{x: 100, y: 150},
+{x: 150, y: 150},
+{x: 150, y: 100},
+{x: 150, y: 50},
+{x: 125, y: 50},
+{x: 100, y: 50},
+{x: 75, y: 50},
+];
 
-var pC = .5;
-var pM = .1;
+var pC = .8;
+var pM = .005;
 var popSize = 50;
 var seed = smaller;
 let ourPopulation;
 let genNumber = 0;
+let highest = 0;
 
 function runAlgorithm () {
-  ourPopulation = new Population(pC, pM);
-  ourPopulation.currentPop = ourPopulation.generate(popSize, seed);
-  ourPopulation.currentFitnesses = ourPopulation.currentPop.map(individual => individual.getFitness());
+  ourPopulation = new Population(popSize, seed, pC, pM);
+  // ourPopulation.currentPop = ourPopulation.generate(popSize, seed);
+  // ourPopulation.currentFitnesses = ourPopulation.currentPop.map(individual => individual.getFitness());
 
   // evolve population, pull out and draw the fittest
   function tick() {
@@ -63,7 +44,8 @@ function runAlgorithm () {
     seedCanvas(ctx, smaller);
     ourPopulation.getFittest().draw(ctx);
     const highScore = ourPopulation.getFittest().getFitness();
-
+    highest = (highScore > highest) ? highScore : highest;
+    console.log('BEST: ', highest, 'current Fittest: ', highScore);
     drawFitness(genNumber, highScore);
 
   }
@@ -87,15 +69,15 @@ setTimeout(runAlgorithm, 500);
 // produce new population, draw the fittest
 
 function drawFitness(x, score) {
-  ctxfit.lineTo(x, score*1000000 );
+  ctxfit.lineTo(x, score*100000 );
   ctxfit.stroke();
 }
 
-function Population (pC, pM) {
-  this.currentPop = [];
-  this.currentFitnesses = [];
-  this.probCross = pC;
-  this.probMuta = pM;
+function Population (size, seedd, ppC, ppM) {
+  this.currentPop = this.generate(size, seedd);
+  this.currentFitnesses = this.currentPop.map(individual => individual.getFitness());
+  this.probCross = ppC;
+  this.probMuta = ppM;
 }
 
 // all members of a population MUST HAVE SAME LOCATIONS

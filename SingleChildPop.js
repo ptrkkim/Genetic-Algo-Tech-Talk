@@ -13,7 +13,7 @@ module.exports = Population;
 // pm = .1
 
 function Population (size, seed, pC, pM) {
-  this.currentPop = this.generate(size, seed);
+  this.currentPop = [];
   this.currentFitnesses = this.currentPop.map(individual => individual.getFitness());
   this.probCross = pC;
   this.probMuta = pM;
@@ -30,7 +30,7 @@ Population.prototype.generate = function (size, seed) {
 Population.prototype.nextGen = function () {
   let evolvedPop = [];
   while (evolvedPop.length < this.currentPop.length) {
-    evolvedPop = [...evolvedPop, ...this.haveTwoChildren()];
+    evolvedPop = [...evolvedPop, this.haveChild()];
   }
 
   if (evolvedPop.length > this.currentPop.length) evolvedPop.splice(-1, 1);
@@ -42,17 +42,15 @@ Population.prototype.nextGen = function () {
 
 // from current population, roulette select 2 parents (indivs), create 2 Individuals
 // cross and mutate if probability dictates
-Population.prototype.haveTwoChildren = function () {
+Population.prototype.haveChild = function () {
   const mom = this.select();
   const dad = this.select();
   const possiblyCrossed = Math.random() < this.probCross
       ? this.crossover(mom, dad)
-      : [mom, dad];
+      : mom;
 
-  const mutatedChildren = possiblyCrossed.map(individual => {
-      return new Individual(individual.mutate(this.probMuta));
-    });
-  return mutatedChildren;
+  const mutatedChild = new Individual(possiblyCrossed.mutate(this.probMuta));
+  return mutatedChild;
 };
 
 // uses roulette selection to give fitter chromosomes a better chance to be picked
@@ -78,8 +76,9 @@ Population.prototype.crossover = function (mom, dad) {
   }
 
   const firstOffspring = orderedCross(segmentStart, segmentEnd, mom, dad);
-  const secOffspring = orderedCross(segmentStart, segmentEnd, dad, mom);
-  return [new Individual(firstOffspring), new Individual(secOffspring)];
+  return new Individual(firstOffspring);
+  // const secOffspring = orderedCross(segmentStart, segmentEnd, dad, mom);
+  // return [new Individual(firstOffspring), new Individual(secOffspring)];
 };
 
 // returns fittest individual

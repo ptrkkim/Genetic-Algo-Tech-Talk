@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Genetic TSP</title>
+  <!-- <script src="/js/Individual.js" defer></script> -->
+  <!-- <script src="/js/Population.js" defer></script> -->
+  <script src="/js/buttonless.js" defer></script>
+  <!-- <script src="/js/index.js" defer></script> -->
+</head>
+<body>
+  <div>
+    <div style="display: inline-block">
+      <canvas id="genetic" width="500" height="500" style="border:1px solid #d3d3d3;">
+        Your browser does not support the canvas element.
+      </canvas>
+      <button id="next">Next</button>
+      <button id="stop">Stop</button>
+      <button id="go">Go</button>
+    </div>
+    <div style="display: inline-block; width: 500px; overflow: scroll">
+      <canvas id="fitness" width="5000" height="250"
+      style="border:1px solid #d3d3d3;">
+      </canvas>
+    </div>
+    <div style="display: inline-block; width: 300px">
+      <span>Population Size</span><input type="range" id="popSize" value="50">
+      <span>Crossover Chance</span><input type="range" id="popSize" value="0.8" max="1" step=".01">
+      <span>Mutation Chance</span><input type="range" id="popSize" value=".01" max="1" step=".01">
+    </div>
+
+  </div>
+</body>
+</html>
+

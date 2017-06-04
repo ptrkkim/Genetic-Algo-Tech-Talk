@@ -8,16 +8,19 @@ function Individual (dna) {
 // returns plain dna
 Individual.prototype.mutate = function (pM) {
   const mutatedRoute = this.dna.slice();
-  for (let index in mutatedRoute) {
+  for (let index = 0; index < mutatedRoute.length; index++) {
     if (pM > Math.random()) {
+
       const randInd = Math.floor(Math.random() * mutatedRoute.length);
+      if (randInd === index) return this.mutate(pM);
+
       const tempLoc = mutatedRoute[randInd];
       mutatedRoute[randInd] = mutatedRoute[index];
       mutatedRoute[index] = tempLoc;
     }
   }
 
-  return mutatedRoute;
+  return new Individual(mutatedRoute);
 };
 
 Individual.prototype.getFitness = function () {
@@ -25,9 +28,13 @@ Individual.prototype.getFitness = function () {
 };
 
 Individual.prototype.draw = function (ctx) {
+  drawLocations(ctx, this.dna);
+  drawRoute(ctx, this.dna);
+};
+
+function drawRoute (ctx, locations) {
   ctx.beginPath();
-  console.log(this.dna);
-  this.dna.forEach((point, index) => {
+  locations.forEach((point, index) => {
     if (index === 0) {
       ctx.moveTo(point.x, point.y);
     } else {
@@ -36,11 +43,18 @@ Individual.prototype.draw = function (ctx) {
   });
 
   // close the path
-
-  ctx.lineTo(this.dna[0].x, this.dna[0].y);
+  ctx.lineTo(locations[0].x, locations[0].y);
   ctx.stroke();
   ctx.closePath();
-};
+}
+
+function drawLocations(ctx, locations) {
+  const pxSize = 5;
+  const offset = pxSize / 2;
+  locations.forEach(location => {
+    ctx.fillRect(location.x - offset, location.y - offset, pxSize, pxSize);
+  });
+}
 
 function distanceFitness (route) {
   let prev = route[0];
