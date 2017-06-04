@@ -1,18 +1,14 @@
 import { drawLocations, drawRoute } from './utils';
 
-module.exports = Individual;
-
-function Individual (dna) {
+export default function Individual (dna) {
   this.dna = dna || [];
 }
 
-// NON MUTATING
 // TSP requires all chromosomes to share same unique set of routes
 // therefore we have two options:
 //   1. only SWAP locations to mutate, always producing valid routes
-//   2. cull invalid routes post-hoc
+//   2. insert/delete random locations, cull invalid routes post-hoc (nahhh)
 
-// retry if tries to swap with self
 Individual.prototype.mutate = function (pM) {
   const mutatedRoute = this.dna.slice();
   for (let index = 0; index < mutatedRoute.length; index++) {

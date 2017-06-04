@@ -1,18 +1,10 @@
-const Individual = require('./Individual');
+import Individual from './Individual';
 
-module.exports = Population;
-// at start
 // generate random set of points based on canvas size
 // create new Population of size x
 // this population's initial pop is an array with the points, shuffled
 
-// for now hardcode
-// size = 10
-// seed = data1;
-// pc = .6
-// pm = .1
-
-function Population (size, seed, pC, pM) {
+export default function Population (size, seed, pC, pM) {
   this.currentPop = this.generate(size, seed);
   this.currentFitnesses = this.currentPop.map(individual => individual.getFitness());
   this.probCross = pC;
@@ -127,6 +119,7 @@ function fillOnce(offspring, locToInsert) {
   }
 }
 
+// Fisher-yates shuffle... but on a copy
 function shuffle(array) {
     var rand, index = -1,
         length = array.length,

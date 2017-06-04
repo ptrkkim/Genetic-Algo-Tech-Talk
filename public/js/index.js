@@ -1,26 +1,51 @@
 // This file runs setup() to create the front-end
 
+/*
+  WHAT NEXT:
+    display and acquire control values for population generation
+    invert and label fitness graph
+    introduce elitism ? tournament select ?
+    analytics
+      most important:
+        # generations
+        fittest individual
+*/
 import Population from './Population';
 import defaultSeed from './data';
 import { clearCanvas, drawLocations, clearListeners, makeTicker } from './utils';
 
-// HTML ALREADY EXISTS
-// ATTACH step, play/pause, restart
-function setup () {
-  const population = newCohort();
+// RUN ONCE- call plain restart afterwards
+function firstInit() {
+  // shift origin to bottom left, Y axis draws up instead of down
+  const gCanvas = document.getElementById('genetic');
+  const fCanvas = document.getElementById('fitness');
+  const gCtx    = gCanvas.getContext('2d');
+  const fCtx    = fCanvas.getContext('2d');
+
+  gCtx.transform(1, 0, 0, -1, 0, gCanvas.height);
+  fCtx.transform(1, 0, 0, -1, 0, fCanvas.height);
+
+  initControls();
+  restart();
+}
+
+function initControls() {
+  linkOutputElements(getInputElements());
+}
+
+function restart () {
+  const population = newCohort(getInputElements());
   initCanvas(population);
 }
 
-// how to acquire control values?
-function newCohort () {
-  // const size = document.getElementById('sizeSlide').value
-  const size = 50;
-  const pC   = 0.8;
-  const pM   = 0.01;
+// generate new cohort based on configured controls
+function newCohort ({ popSizeIn, pCrossIn, pMutateIn }) {
+  const size    = +popSizeIn.value;
+  const pCross  = +pCrossIn.value;
+  const pMutate = +pMutateIn.value;
   const seed = null || defaultSeed;
-  const population = new Population(size, seed, pC, pM);
 
-  return population;
+  return new Population(size, seed, pCross, pMutate);
 }
 
 function initCanvas (population) {
@@ -45,14 +70,15 @@ function initButtons(tick) {
   const reset   = document.getElementById('reset');
   const buttons = {step, play, pause, reset};
 
-  addListeners(tick, buttons);
+  addButtonListeners(tick, buttons);
 }
 
-function addListeners(tick, {step, play, pause, reset}) {
+function addButtonListeners(tick, {step, play, pause, reset}) {
   let tickInterval;
   const playTicking = () => {
     if (tickInterval) return;
-    tickInterval = setInterval(tick, 0);
+    const stepInterval = +document.getElementById('intervalIn').value;
+    tickInterval = setInterval(tick, stepInterval);
   };
 
   const pauseTicking = () => {
@@ -63,7 +89,7 @@ function addListeners(tick, {step, play, pause, reset}) {
   const resetTicking = () => {
     if (tickInterval) pauseTicking();
     clearListeners(step, play, pause, reset);
-    setup(); // SETUP ONLY CALLED FOR INIT, AND FOR RESETS
+    restart();
   };
 
   step.addEventListener('click', tick);
@@ -72,4 +98,24 @@ function addListeners(tick, {step, play, pause, reset}) {
   reset.addEventListener('click', resetTicking);
 }
 
-setup();
+function linkOutputElements (controls) {
+  Object.values(controls).forEach(input => {
+    const outputId = `${input.id.slice(0, -2)}Out`;
+    const output = document.getElementById(outputId);
+    output.innerHTML = input.value;
+
+    input.oninput = () => {
+      output.innerHTML = input.value;
+    };
+  });
+}
+
+function getInputElements() {
+  const intervalIn = document.getElementById('intervalIn');
+  const popSizeIn  = document.getElementById('popSizeIn');
+  const pCrossIn   = document.getElementById('pCrossIn');
+  const pMutateIn  = document.getElementById('pMutateIn');
+  return { intervalIn, popSizeIn, pCrossIn, pMutateIn };
+}
+
+firstInit();
