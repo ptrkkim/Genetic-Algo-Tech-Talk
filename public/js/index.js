@@ -12,7 +12,7 @@
 */
 
 import Population from './Population';
-import defaultSeed from './data';
+import { smallSquare, tenSided } from './data';
 import {
   getCanvasesAndContexts,
   clearCanvas,
@@ -50,8 +50,8 @@ function newCohort ({ popSizeIn, pCrossIn, pMutateIn }) {
   const size    = +popSizeIn.value;
   const pCross  = +pCrossIn.value;
   const pMutate = +pMutateIn.value;
-  const seed = null || defaultSeed;
-  const resized = fitRouteToCanvas(seed, 'gCanvas');
+  const seed = null || tenSided;
+  const resized = seed // fitRouteToCanvas(seed, 'gCanvas');
   return new Population(size, resized, pCross, pMutate);
 }
 
