@@ -1,21 +1,22 @@
-// This file runs setup() to create the front-end
-
+// Create front-end
 /*
   WHAT NEXT:
-    display and acquire control values for population generation
+    DONE display and acquire control values for population generation
     invert and label fitness graph
     introduce elitism ? tournament select ?
     analytics
       most important:
         # generations
-        fittest individual
+        fittest individual (shortest path so far, + drawing);
 */
+
 import Population from './Population';
 import defaultSeed from './data';
 import { clearCanvas, drawLocations, clearListeners, makeTicker } from './utils';
 
-// RUN ONCE- call plain restart afterwards
-function firstInit() {
+firstInit(); // only thing this file actually does on load
+
+function firstInit () {
   // shift origin to bottom left, Y axis draws up instead of down
   const gCanvas = document.getElementById('genetic');
   const fCanvas = document.getElementById('fitness');
@@ -29,7 +30,8 @@ function firstInit() {
   restart();
 }
 
-function initControls() {
+function initControls () {
+  setDefaultConfig();
   linkOutputElements(getInputElements());
 }
 
@@ -63,17 +65,18 @@ function initCanvas (population) {
   drawLocations(gCtx, seed);
 }
 
-function initButtons(tick) {
+function initButtons (tick) {
   const step    = document.getElementById('step');
   const play    = document.getElementById('play');
   const pause   = document.getElementById('pause');
   const reset   = document.getElementById('reset');
-  const buttons = {step, play, pause, reset};
+  const config  = document.getElementById('config');
+  const buttons = { step, play, pause, reset, config };
 
   addButtonListeners(tick, buttons);
 }
 
-function addButtonListeners(tick, {step, play, pause, reset}) {
+function addButtonListeners (tick, { step, play, pause, reset, config }) {
   let tickInterval;
   const playTicking = () => {
     if (tickInterval) return;
@@ -96,6 +99,7 @@ function addButtonListeners(tick, {step, play, pause, reset}) {
   play.addEventListener('click', playTicking);
   pause.addEventListener('click', pauseTicking);
   reset.addEventListener('click', resetTicking);
+  config.addEventListener('click', setDefaultConfig);
 }
 
 function linkOutputElements (controls) {
@@ -110,7 +114,7 @@ function linkOutputElements (controls) {
   });
 }
 
-function getInputElements() {
+function getInputElements () {
   const intervalIn = document.getElementById('intervalIn');
   const popSizeIn  = document.getElementById('popSizeIn');
   const pCrossIn   = document.getElementById('pCrossIn');
@@ -118,4 +122,12 @@ function getInputElements() {
   return { intervalIn, popSizeIn, pCrossIn, pMutateIn };
 }
 
-firstInit();
+// who doesn't love some magic numbers
+function setDefaultConfig () {
+  const { intervalIn, popSizeIn, pCrossIn, pMutateIn } = getInputElements();
+
+  intervalIn.value = 0;
+  popSizeIn.value  = 50;
+  pCrossIn.value   = 0.8;
+  pMutateIn.value  = 0.01;
+}

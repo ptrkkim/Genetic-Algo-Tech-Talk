@@ -1,5 +1,5 @@
-
-
+// testing algo visualization in JSFiddle/Codepen monolith file with no front-end
+// god what was I thinking
 
 var canvas = document.getElementById("genetic");
 var ctx = canvas.getContext("2d");

@@ -1,9 +1,8 @@
 var express = require('express');
 var app = express();
 
-var nunjucks = require('nunjucks');
+var nunjucks = require('nunjucks'); // lmaooooo
 var path = require('path');
-// var bodyParser = require('body-parser');
 
 module.exports = app;
 
@@ -12,9 +11,6 @@ app.engine('html', nunjucks.render);
 nunjucks.configure('views', { noCache: true });
 
 app.use(express.static(path.join(__dirname, '/public')));
-
-// app.use(bodyParser.urlencoded({ extended: false }));
-// app.use(bodyParser.json());
 
 app.get('/', function (req, res) {
    res.render('index');

@@ -1,8 +1,8 @@
-// special considerations for TSP
-// all locations included once and only once- no missed locations
+// codewars 2kyu GA to generate a binary number representing an integer value
 
+// special considerations for Traveling Salesman
+// all locations included once and only once- no missed locations
 // mutation method should therefore only shuffle
-//
 
 var GeneticAlgorithm = function () {};
 
@@ -37,59 +37,7 @@ GeneticAlgorithm.prototype.mutate = function(locations, p) {
   return swappedLocations;
 };
 
-// takes a random sized subroute from first parent
-// passes that route to child
-// then iterate through second parent's route to fill in
-// MAINTAINS ORDER
-// takes two individuals
-// now returns two Individuals with crossed DNA
-Population.prototype.crossover = function(mom, dad) {
-  let segmentStart = Math.floor(mom.dna.length * Math.random());
-  let segmentEnd = Math.floor(dad.dna.length * Math.random());
-
-  if ( segmentStart > segmentEnd ) {
-    const temp = segmentStart;
-    segmentStart = segmentEnd;
-    segmentEnd = temp;
-  }
-
-  const firstOffspring = createCrossed(segmentStart, segmentEnd, mom, dad);
-  const secOffspring = createCrossed(segmentStart, segmentEnd, dad, mom);
-  return [new Individual(firstOffspring), new Individual(secOffspring)];
-};
-
-function createCrossed (startInd, endInd, segParent, otherParent) {
-  let offspring = Array(otherParent.length).fill(null);
-  const segment = segParent.slice(startInd, endInd);
-
-  for (let index = startInd; index < endInd; index++) {
-    offspring[index] = segParent[index];
-  }
-
-  for (let parentIndex in otherParent) {
-    const parentLoc = otherParent[parentIndex];
-    if (!segment.some(location => sameLocation(location, parentLoc))) {
-      fillOnce(offspring, parentLoc);
-    }
-  }
-
-  return offspring;
-}
-
-function fillOnce(offspring, locToInsert) {
-  const insertAt = offspring.indexOf(null);
-  if (insertAt === -1) {
-    console.log('already filled?????');
-  } else {
-    offspring[insertAt] = locToInsert;
-  }
-}
-
-function sameLocation (location1, location2) {
-  return location1.x === location2.x && location1.y === location2.y;
-}
-
-// will need to customize to swap
+// will need to customize to cross in-order segments
 GeneticAlgorithm.prototype.crossedover = function(chromosome1, chromosome2) {
   const crossIndex = Math.floor(Math.random() * chromosome1.length);
   if (crossIndex === 0) {
@@ -100,28 +48,6 @@ GeneticAlgorithm.prototype.crossedover = function(chromosome1, chromosome2) {
   return [newChromo1, newChromo2];
 };
 
-// how to represent a route?
-// in-order array of coordinates
-
-// generate new pops, once each iteration
-// for each new pop, generate new fitness mapping
-// loop, creating new evolved generations based on past generations
-// return the fittest individual after max iterations reached
-function distanceFitness (locations) {
-  let prev = locations[0];
-  let distance = locations.reduce((totalDist, location, i) => {
-    const distToAdd = Math.hypot(location.x - prev.x, location.y - prev.y);
-    prev = location;
-    return distToAdd;
-  }, 0);
-
-  // make circular
-  const first = locations[0];
-  const last = locations[locations.length - 1];
-  distance += Math.hypot(first.x - last.x, first.y - last.y);
-
-  return 1 / distance;
-}
 // takes a fitness function, length of routes, mutation/cross probs, iterations
 // returns single fittest member of all generations
 GeneticAlgorithm.prototype.run = function(fitness, length, p_c, p_m, iterations = 100) {
@@ -157,6 +83,3 @@ GeneticAlgorithm.prototype.evolve = function(population, fitnesses, p_c, p_m) {
   if (evolvedPop.length > population.length) evolvedPop.splice(-1,1);
   return evolvedPop;
 };
-
-const tsp = new GeneticAlgorithm();
-tsp.run(distanceFitness, 20, 0.6, 0.002);

@@ -1,3 +1,5 @@
+// just to declutter big picture logic in index/population/individual
+
 export const clearCanvas = (ctx, canvas) => {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.beginPath();

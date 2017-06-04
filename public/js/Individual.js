@@ -27,7 +27,7 @@ Individual.prototype.mutate = function (pM) {
 };
 
 Individual.prototype.getFitness = function () {
-  return distanceFitness(this.dna);
+  return 1 / getDistance(this.dna);
 };
 
 Individual.prototype.draw = function (ctx) {
@@ -35,12 +35,11 @@ Individual.prototype.draw = function (ctx) {
   drawRoute(ctx, this.dna);
 };
 
-function distanceFitness (route) {
+export function getDistance (route) {
   let prev = route[0];
   let distance = route.reduce((totalDist, location) => {
     const distToAdd = Math.hypot(location.x - prev.x, location.y - prev.y);
     prev = location;
-
     return totalDist + distToAdd;
   }, 0);
 
@@ -49,5 +48,5 @@ function distanceFitness (route) {
   const last = route[route.length - 1];
   distance += Math.hypot(first.x - last.x, first.y - last.y);
 
-  return 1 / distance;
+  return distance;
 }
