@@ -8,11 +8,11 @@
       most important:
         # generations
         fittest individual (shortest path so far, + drawing);
-    future analytics? 
+    future analytics?
 */
 
 import Population from './Population';
-import { smallSquare, tenSided } from './data';
+import { random40, smallSquare, tenSided } from './data';
 import {
   getCanvasesAndContexts,
   clearCanvas,
@@ -50,8 +50,8 @@ function newCohort ({ popSizeIn, pCrossIn, pMutateIn }) {
   const size    = +popSizeIn.value;
   const pCross  = +pCrossIn.value;
   const pMutate = +pMutateIn.value;
-  const seed = null || tenSided;
-  const resized = seed // fitRouteToCanvas(seed, 'gCanvas');
+  const seed    = null || random40;
+  const resized = fitRouteToCanvas(seed, 'gCanvas');
   return new Population(size, resized, pCross, pMutate);
 }
 

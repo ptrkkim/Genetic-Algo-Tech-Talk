@@ -61,21 +61,26 @@ export const fitRouteToCanvas = (seedArray, canvasString) => {
     ? gCanvas
     : bCanvas;
 
+// SQUARES ONLY
   const allX = seedArray.map(point => point.x);
   const allY = seedArray.map(point => point.y);
 
   const greatest = Math.max(...allX, ...allY);
   const scale = canvas.height / greatest;
   const scaled  = seedArray.map(point => ({ x: point.x * scale, y: point.y * scale }));
-  const bottomLeft = scaled.reduce((lowest, point) => {
-    return Math.hypot(point.x, point.y) < Math.hypot(lowest.x, lowest.y)
-      ? point
-      : lowest;
-  }, { x: greatest, y: greatest});
+  
+  // const bottomLeft = scaled.reduce((lowest, point) => {
+  //   return Math.hypot(point.x, point.y) < Math.hypot(lowest.x, lowest.y)
+  //     ? point
+  //     : lowest;
+  // }, { x: greatest, y: greatest});
+
+  const lowestX = findLowest(scaled, 'x');
+  const lowestY = findLowest(scaled, 'y');
 
   // must shift left and down
-  const offsetX = bottomLeft.x - (canvas.width * 0.05);
-  const offsetY = bottomLeft.y - (canvas.width * 0.05);
+  const offsetX = lowestX - (canvas.width * 0.05);
+  const offsetY = lowestY - (canvas.width * 0.05);
   const shifted = scaled.map(point => ({ x: point.x - offsetX, y: point.y - offsetY }));
 
   return shifted;
@@ -123,3 +128,10 @@ function updateBest (population, bCanvas, bCtx) {
   bestButSmaller.draw(bCtx);
 }
 
+function findLowest(pointArr, key) {
+  return pointArr.reduce((lowest, point) => {
+    return lowest < point[key]
+      ? lowest
+      : point[key];
+  }, 100000000000000);
+}
