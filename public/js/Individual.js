@@ -1,3 +1,5 @@
+import { drawLocations, drawRoute } from './utils';
+
 module.exports = Individual;
 
 function Individual (dna) {
@@ -5,7 +7,12 @@ function Individual (dna) {
 }
 
 // NON MUTATING
-// returns plain dna
+// TSP requires all chromosomes to share same unique set of routes
+// therefore we have two options:
+//   1. only SWAP locations to mutate, always producing valid routes
+//   2. cull invalid routes post-hoc
+
+// retry if tries to swap with self
 Individual.prototype.mutate = function (pM) {
   const mutatedRoute = this.dna.slice();
   for (let index = 0; index < mutatedRoute.length; index++) {
@@ -31,28 +38,6 @@ Individual.prototype.draw = function (ctx) {
   drawLocations(ctx, this.dna);
   drawRoute(ctx, this.dna);
 };
-
-function drawRoute (ctx, locations) {
-  ctx.beginPath();
-  locations.forEach((point, index) => {
-    if (index === 0) {
-      ctx.moveTo(point.x, point.y);
-    } else {
-      ctx.lineTo(point.x, point.y);
-    }
-  });
-
-  ctx.closePath();
-  ctx.stroke();
-}
-
-function drawLocations(ctx, locations) {
-  const pxSize = 5;
-  const offset = pxSize / 2;
-  locations.forEach(location => {
-    ctx.fillRect(location.x - offset, location.y - offset, pxSize, pxSize);
-  });
-}
 
 function distanceFitness (route) {
   let prev = route[0];
