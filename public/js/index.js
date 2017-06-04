@@ -4,27 +4,32 @@
     DONE display and acquire control values for population generation
     invert and label fitness graph
     introduce elitism ? tournament select ?
-    analytics
+    DONE analytics
       most important:
         # generations
         fittest individual (shortest path so far, + drawing);
+    future analytics? 
 */
 
 import Population from './Population';
 import defaultSeed from './data';
-import { clearCanvas, drawLocations, clearListeners, makeTicker } from './utils';
+import {
+  getCanvasesAndContexts,
+  clearCanvas,
+  drawLocations,
+  clearListeners,
+  makeTicker,
+  fitRouteToCanvas
+} from './utils';
 
 firstInit(); // only thing this file actually does on load
 
 function firstInit () {
-  // shift origin to bottom left, Y axis draws up instead of down
-  const gCanvas = document.getElementById('genetic');
-  const fCanvas = document.getElementById('fitness');
-  const gCtx    = gCanvas.getContext('2d');
-  const fCtx    = fCanvas.getContext('2d');
-
+  const { gCanvas, gCtx, fCanvas, fCtx, bCanvas, bCtx } = getCanvasesAndContexts();
+  // DO ONCE!! shift origin to bottom left, Y axis draws up instead of down
   gCtx.transform(1, 0, 0, -1, 0, gCanvas.height);
   fCtx.transform(1, 0, 0, -1, 0, fCanvas.height);
+  bCtx.transform(1, 0, 0, -1, 0, bCanvas.height);
 
   initControls();
   restart();
@@ -46,22 +51,21 @@ function newCohort ({ popSizeIn, pCrossIn, pMutateIn }) {
   const pCross  = +pCrossIn.value;
   const pMutate = +pMutateIn.value;
   const seed = null || defaultSeed;
-
-  return new Population(size, seed, pCross, pMutate);
+  const resized = fitRouteToCanvas(seed, 'gCanvas');
+  return new Population(size, resized, pCross, pMutate);
 }
 
 function initCanvas (population) {
-  const gCanvas = document.getElementById('genetic');
-  const fCanvas = document.getElementById('fitness');
-  const gCtx    = gCanvas.getContext('2d');
-  const fCtx    = fCanvas.getContext('2d');
+  const { gCanvas, fCanvas, bCanvas, gCtx } = getCanvasesAndContexts();
 
-  const tickingFunc = makeTicker(gCanvas, gCtx, fCtx, population);
+  const tickingFunc = makeTicker(population);
   initButtons(tickingFunc);
 
-  const seed = null || defaultSeed;
-  clearCanvas(gCtx, gCanvas);
-  clearCanvas(fCtx, fCanvas);
+  const seed = population.getFittest().dna;
+
+  clearCanvas(gCanvas);
+  clearCanvas(fCanvas);
+  clearCanvas(bCanvas);
   drawLocations(gCtx, seed);
 }
 
