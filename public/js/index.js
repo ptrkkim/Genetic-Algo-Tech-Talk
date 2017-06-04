@@ -10,19 +10,37 @@ function initButtons (population) {
   const gCtx = gCanvas.getContext('2d');
   const fCanvas = document.getElemenyById('fitness');
   const fCtx = fCanvas.getContext('2d');
+
   const tick = makePopTick(gCanvas, gCtx, fCtx, population);
   let tickInterval;
 
-  document.getElementById('next').addEventListener('click', tick);
-  document.getElementById('go').addEventListener('click', () => {
-    tickInterval = setInterval(tick, 0);
+  const step = document.getElementById('step');
+  const go = document.getElementById('go');
+  const stop = document.getElementById('stop');
+  const reset = document.getElementById('reset');
+
+  step.addEventListener('click', tick);
+  go.addEventListener('click', () => { tickInterval = setInterval(tick, 0); });
+  stop.addEventListener('click', stopTicking);
+  reset.addEventListener('click', () => {
+    if (tickInterval) stopTicking();
+    clearListeners(step, go, stop, reset);
+    setup();
   });
-  document.getElementById('stop').addEventListener('click', () => { clearInterval(tickInterval); });
-  // document.getElementById('clear').addEventListener('click', () => {
-  //   newCohort();
-  // });
+
+  function stopTicking () {
+    clearInterval(tickInterval);
+    tickInterval = null;
+  }
 }
 
+
+function clearListeners (...domNodes) {
+  domNodes.forEach(domElement => {
+    const clone = domElement.cloneNode(true);
+    domElement.parentNode.replaceChild(clone, domElement);
+  });
+}
 // create a ticker for each population,
 // so they can each clear and draw on canvas on command
 function makePopTick (canvas, gtx, ftx, population) {
