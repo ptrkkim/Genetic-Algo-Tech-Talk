@@ -6,9 +6,9 @@ const seed = require('./data');
 // ATTACH step, play/pause, restart
 
 function initButtons (population) {
-  const gCanvas = document.getElemenyById('genetic');
+  const gCanvas = document.getElementById('genetic');
   const gCtx = gCanvas.getContext('2d');
-  const fCanvas = document.getElemenyById('fitness');
+  const fCanvas = document.getElementById('fitness');
   const fCtx = fCanvas.getContext('2d');
 
   const tick = makePopTick(gCanvas, gCtx, fCtx, population);

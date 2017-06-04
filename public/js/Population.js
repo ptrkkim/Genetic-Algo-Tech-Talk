@@ -18,7 +18,7 @@ function Population (size, seed, pC, pM) {
   this.probCross = pC;
   this.probMuta = pM;
   this.genNumber = 0;
-  this.fittestEver = null;
+  this.fittestEver = this.getFittest();
 }
 
 // all members of a population MUST HAVE SAME LOCATIONS
