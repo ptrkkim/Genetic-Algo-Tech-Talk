@@ -1,0 +1,21 @@
+Things to show:
+
+  15 point polygon
+    Optimum: 1456, as low as <100 generations
+
+    showcase local max with population 10, cross .5, mutation 0;
+    showcase fast optimization with pop 100, cross .5, mutation 0;
+
+    introduce mutation
+      - seems to slow us down on average
+      - what makes it worth it? 
+      - helps prevent the local maximum problem
+
+    High pop/low pop
+      - talk about genetic diversity
+
+    Explore crossover more
+      .25 cross with .01 muta works very well
+
+  Small square
+    Optimum: 1333

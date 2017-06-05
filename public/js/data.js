@@ -17,9 +17,9 @@ export const random40 = [{"x":116,"y":404},{"x":161,"y":617},{"x":16,"y":97},{"x
 
 export const tenSided = createCircularPolygon(20);
 
-function createCircularPolygon(sides) {
+export function createCircularPolygon(sides) {
   if (sides < 3) return;
-  const radius = 50;
+  const radius = 65;
   const angle = Math.PI * 2 / sides;
 
   const points = Array(sides).fill(null).map((point, i) => {

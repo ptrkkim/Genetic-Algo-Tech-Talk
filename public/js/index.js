@@ -9,10 +9,17 @@
         # generations
         fittest individual (shortest path so far, + drawing);
     future analytics?
+
+  change seedData
+  need to improve algorithm
+    preserve 10% elite?
+    or take best in pop and clone/mutate for first 10% of next pop?
+
+  clear button should reset analytics
 */
 
 import Population from './Population';
-import { random40, smallSquare, tenSided } from './data';
+import { random40, smallSquare, createCircularPolygon } from './data';
 import {
   getCanvasesAndContexts,
   clearCanvas,
@@ -21,6 +28,10 @@ import {
   makeTicker,
   fitRouteToCanvas
 } from './utils';
+
+// FORGIVE THIS GLOBAL VARIABLE
+const defaultSeed = createCircularPolygon(15);
+// const defaultSeed = smallSquare;
 
 firstInit(); // only thing this file actually does on load
 
@@ -50,8 +61,7 @@ function newCohort ({ popSizeIn, pCrossIn, pMutateIn }) {
   const size    = +popSizeIn.value;
   const pCross  = +pCrossIn.value;
   const pMutate = +pMutateIn.value;
-  const seed    = null || random40;
-  const resized = fitRouteToCanvas(seed, 'gCanvas');
+  const resized = fitRouteToCanvas(defaultSeed, 'gCanvas');
   return new Population(size, resized, pCross, pMutate);
 }
 

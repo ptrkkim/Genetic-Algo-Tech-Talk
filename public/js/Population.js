@@ -17,6 +17,8 @@ export default function Population (size, seed, pC, pM) {
 // thus generate a pop by shuffling a single set of locations
 Population.prototype.generate = function (size, seed) {
   return Array(size).fill(null).map( () => new Individual(shuffle(seed)) );
+  // return Array(size).fill(null).map( () => new Individual(seed) );
+
 };
 
 // creates next generation for a population
@@ -63,14 +65,11 @@ Population.prototype.select = function () {
 };
 
 Population.prototype.crossover = function (mom, dad) {
-  let segmentStart = Math.floor(mom.dna.length * Math.random());
-  let segmentEnd = Math.floor(dad.dna.length * Math.random());
+  let num1 = Math.floor(mom.dna.length * Math.random());
+  let num2 = Math.floor(dad.dna.length * Math.random());
 
-  if ( segmentStart > segmentEnd ) {
-    const temp = segmentStart;
-    segmentStart = segmentEnd;
-    segmentEnd = temp;
-  }
+  const segmentStart = Math.min(num1, num2);
+  const segmentEnd = Math.max(num1, num2);
 
   const firstOffspring = orderedCross(segmentStart, segmentEnd, mom, dad);
   const secOffspring = orderedCross(segmentStart, segmentEnd, dad, mom);
@@ -88,35 +87,31 @@ Population.prototype.getFittest = function () {
 };
 
 // due to genome being a route, should exchange segments while maintaining order
+// read into 'ordered crossover'
 function orderedCross (startInd, endInd, segParent, otherParent) {
-  let crossedDNA = Array(otherParent.dna.length).fill(null);
-  const segment = segParent.dna.slice(startInd, endInd);
+  const childDNA  = segParent.dna.slice(startInd, endInd);
+  const dnaLength = segParent.dna.length;
 
-  for (let index = startInd; index < endInd; index++) {
-    crossedDNA[index] = segParent.dna[index];
-  }
+  for (let index = 0; index < dnaLength; index++) {
+    const parentInd = (endInd + index) % dnaLength;
+    const parentLoc = otherParent.dna[parentInd];
 
-  for (let parentIndex in otherParent.dna) {
-    const parentLoc = otherParent.dna[parentIndex];
-    if (!segment.some(location => sameLocation(location, parentLoc))) {
-      fillOnce(crossedDNA, parentLoc);
+    if (!childDNA.some(location => sameLocation(location, parentLoc))) {
+      childDNA.push(parentLoc);
     }
   }
 
-  return crossedDNA;
+  // spliced segment should be in same relative location for parent and child
+  return rotate(childDNA, startInd);
 }
 
 function sameLocation (location1, location2) {
   return location1.x === location2.x && location1.y === location2.y;
 }
 
-function fillOnce(offspring, locToInsert) {
-  const insertAt = offspring.indexOf(null);
-  if (insertAt === -1) {
-    console.log('already filled?????');
-  } else {
-    offspring[insertAt] = locToInsert;
-  }
+function rotate (array, index) {
+  const offset = array.length - index;
+  return [...array.slice(offset), ...array.slice(0, offset)];
 }
 
 // Fisher-yates shuffle... but on a copy

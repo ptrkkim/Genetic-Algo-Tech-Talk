@@ -9,13 +9,13 @@ export default function Individual (dna) {
 //   1. only SWAP locations to mutate, always producing valid routes
 //   2. insert/delete random locations, cull invalid routes post-hoc (nahhh)
 
-Individual.prototype.mutate = function (pM) {
+Individual.prototype.mutate = function (probMutate) {
   const mutatedRoute = this.dna.slice();
   for (let index = 0; index < mutatedRoute.length; index++) {
-    if (pM > Math.random()) {
+    if (Math.random() < probMutate) {
 
       const randInd = Math.floor(Math.random() * mutatedRoute.length);
-      if (randInd === index) return this.mutate(pM);
+      // if (randInd === index) return this.mutate(probMutate);
 
       const tempLoc = mutatedRoute[randInd];
       mutatedRoute[randInd] = mutatedRoute[index];
@@ -35,7 +35,7 @@ Individual.prototype.draw = function (ctx) {
   drawRoute(ctx, this.dna);
 };
 
-export function getDistance (route) {
+function getDistance (route) {
   let prev = route[0];
   let distance = route.reduce((totalDist, location) => {
     const distToAdd = Math.hypot(location.x - prev.x, location.y - prev.y);

@@ -40,7 +40,8 @@ export const clearListeners = (...domNodes) => {
 };
 
 export const drawFitness = (ctx, xAxis, score) => {
-  ctx.lineTo(xAxis, score * 100000 );
+  // calculate fitness of ideal data to a sense for scale
+  ctx.lineTo(xAxis, score * 400000 );
   ctx.stroke();
 };
 
@@ -68,7 +69,7 @@ export const fitRouteToCanvas = (seedArray, canvasString) => {
   const greatest = Math.max(...allX, ...allY);
   const scale = canvas.height / greatest;
   const scaled  = seedArray.map(point => ({ x: point.x * scale, y: point.y * scale }));
-  
+
   // const bottomLeft = scaled.reduce((lowest, point) => {
   //   return Math.hypot(point.x, point.y) < Math.hypot(lowest.x, lowest.y)
   //     ? point
@@ -79,8 +80,8 @@ export const fitRouteToCanvas = (seedArray, canvasString) => {
   const lowestY = findLowest(scaled, 'y');
 
   // must shift left and down
-  const offsetX = lowestX - (canvas.width * 0.05);
-  const offsetY = lowestY - (canvas.width * 0.05);
+  const offsetX = lowestX - (canvas.width * 0.025);
+  const offsetY = lowestY - (canvas.width * 0.025);
   const shifted = scaled.map(point => ({ x: point.x - offsetX, y: point.y - offsetY }));
 
   return shifted;
