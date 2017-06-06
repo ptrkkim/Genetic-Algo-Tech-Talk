@@ -33,11 +33,27 @@ export const drawRoute = (ctx, locations) => {
 
 // clones and replaces to strip listeners
 export const clearListeners = (...domNodes) => {
-  domNodes.forEach(domElement => {
-    const clone = domElement.cloneNode(true);
-    domElement.parentNode.replaceChild(clone, domElement);
-  });
+  domNodes.forEach(replaceNode);
 };
+
+function replaceNode(domElement) {
+  const clone = domElement.cloneNode(true);
+  domElement.parentNode.replaceChild(clone, domElement);
+}
+
+export const clearAnalytics = () => {
+  const genNumber = document.getElementById('genNumber');
+  const shortestNow = document.getElementById('shortestNow');
+  const fittestGens = document.getElementById('fittestGens');
+  const shortestEver = document.getElementById('shortestEver');
+  const analytics = [genNumber, shortestNow, fittestGens, shortestEver];
+
+  analytics.forEach(resetNumber);
+};
+
+function resetNumber(domElement) {
+  domElement.innerHTML = 0;
+}
 
 export const drawFitness = (ctx, xAxis, score) => {
   // calculate fitness of ideal data to a sense for scale

@@ -2,10 +2,8 @@
 <html>
 <head>
   <title>Genetic TSP</title>
-  <!-- <script src="/js/Individual.js" defer></script> -->
-  <!-- <script src="/js/Population.js" defer></script> -->
-  <!-- <script src="/js/buttonless.js" defer></script> -->
-  <!-- <script src="/js/index.js" defer></script> -->
+  <style>body{background-color: #f8f8f1; font-size: 22px}</style>
+  <style>button{font-size:22px}</style>
   <script src="/bundle.js" defer></script>
 </head>
 <body>
@@ -18,19 +16,19 @@
     </div>
 
     <div style="display: inline-block; width: 750px">
-      <div style="display: inline-block; width: 280px">
+      <div style="display: inline-block; width: 380px">
         <div>
           <span>Current # generations: </span>
           <output id="genNumber">0</output>
         </div>
         <div>
-          <span>Generations to achieve best-so-far: </span>
-          <output id="fittestGens">0</output>
-        </div>
-        <div>
-          <span>This generation's shortest distance: </span>
+          <span>Current shortest distance: </span>
           <output id="shortestNow">0</output>
         </div>        
+        <div>
+          <span>Generations to achieve shortest-ever: </span>
+          <output id="fittestGens">0</output>
+        </div>
         <div>
           <span>Shortest distance ever: </span>
           <output id="shortestEver">0</output>
@@ -53,7 +51,7 @@
       <button id="step">Step</button>
       <button id="config">DEFAULT CONFIG</button>
     </div>
-    <div style="display: inline-block; width: 300px">
+    <div style="display: inline-block; width: 600px">
       <div>
         <span>Step Interval (ms)</span>
         <input type="range" id="intervalIn" max="500" step="10">

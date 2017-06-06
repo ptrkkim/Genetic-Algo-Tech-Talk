@@ -1,21 +1,53 @@
-Things to show:
+  SHOWCASE:
+    Population: GENETIC DIVERSITY
+      population 10, cross .5, mutation 0    // bad, low diversity, local max problem
+      population 100, cross .5, mutation 0   // good, high genetic diversity
 
-  15 point polygon
-    Optimum: 1456, as low as <100 generations
+    Crossover: 
+      population 50, cross 0, mutation 0   // bad, local max problem
+      population 50, cross 0.1, mutation 0 // bad, local max problem
+      population 50, cross .5, mutation 0  // pretty decent solver
+      population 50, cross 1, mutation 0   // bad, optimization/convergence problem
+*******************************************
 
-    showcase local max with population 10, cross .5, mutation 0;
-    showcase fast optimization with pop 100, cross .5, mutation 0;
+Order of operations:
+  Start with a population of potential solutions (routes)
+  To create next gen:
+    select two individuals- element of randomness, but should be biased toward fittest
+    breed:
+      1. Decide if they will exchange DNA, if not pass clones to next step
+      2. Apply mutation to each clone
+      3. Repeat 1-2 until you have new population of same size as old one
 
-    introduce mutation
-      - seems to slow us down on average
-      - what makes it worth it? 
-      - helps prevent the local maximum problem
+    In the case of my demo, I will actually be displaying:
+      Fittest individual (route) in our current generation
+      Fittest individual ever produced by this run of the algorithm
 
-    High pop/low pop
-      - talk about genetic diversity
+*******************************************
 
-    Explore crossover more
-      .25 cross with .01 muta works very well
+PRESENTATION OUTLINE
+  
 
-  Small square
-    Optimum: 1333
+  CROSSOVER
+    low : increases convergence speed (fittest are likely to survive as-is to next gen)
+          decreases exploratory power (easy to get stuck in local optimum)
+          nobody having kids - next gen is clones; unlikely to get a fit cross
+
+    high: decreases convergence speed (fittest unlikely to survive as-is)
+          increases exploratory power (many crosses means a diverse population)
+          the fittest have lower influence; sometimes you want them to just survive
+
+  MUTATION
+    seems to slow us down on average 
+    what makes it worth it? helps prevent the local maximum problem
+ 
+    low : rely on fit-biased selection and crossover (increase convergence speed)
+    high: slower (increasingly impossible) convergence, increase exploratory power
+
+  END
+    optimization tweaks (elitism)
+    use cases: 
+      mario, teaching bots to walk, 
+      engineering hardware (vibration damping supports that look like leg bones)
+  
+ultimate tradeoff: fast convergence vs. exploratory power

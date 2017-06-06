@@ -13,7 +13,7 @@ export default function Population (size, seed, pC, pM) {
   this.fittestEver = this.getFittest();
 }
 
-// all members of a population MUST HAVE SAME LOCATIONS
+// all members of a population MUST HAVE SAME LOCATIONS IN DNA
 // thus generate a pop by shuffling a single set of locations
 Population.prototype.generate = function (size, seed) {
   return Array(size).fill(null).map( () => new Individual(shuffle(seed)) );

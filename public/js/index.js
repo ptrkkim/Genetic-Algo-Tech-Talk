@@ -2,20 +2,20 @@
 /*
   WHAT NEXT:
     DONE display and acquire control values for population generation
-    invert and label fitness graph
-    introduce elitism ? tournament select ?
     DONE analytics
       most important:
         # generations
         fittest individual (shortest path so far, + drawing);
-    future analytics?
 
-  change seedData
-  need to improve algorithm
-    preserve 10% elite?
-    or take best in pop and clone/mutate for first 10% of next pop?
+    MOSTLY DONE change seedData
+    DONE need to improve algorithm
+    NAH preserve 10% elite?
+    NAH take fittest in generation and clone/mutate for first 10% of next pop?
 
-  clear button should reset analytics
+    DONE clear button should reset analytics
+    DONE increase size of text, buttons, etc
+
+    LOW PRIO: label fitness graph
 */
 
 import Population from './Population';
@@ -25,6 +25,7 @@ import {
   clearCanvas,
   drawLocations,
   clearListeners,
+  clearAnalytics,
   makeTicker,
   fitRouteToCanvas
 } from './utils';
@@ -106,6 +107,7 @@ function addButtonListeners (tick, { step, play, pause, reset, config }) {
   const resetTicking = () => {
     if (tickInterval) pauseTicking();
     clearListeners(step, play, pause, reset);
+    clearAnalytics();
     restart();
   };
 
@@ -142,6 +144,6 @@ function setDefaultConfig () {
 
   intervalIn.value = 0;
   popSizeIn.value  = 50;
-  pCrossIn.value   = 0.8;
+  pCrossIn.value   = 0.5;
   pMutateIn.value  = 0.01;
 }
