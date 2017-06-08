@@ -19,7 +19,7 @@
 */
 
 import Population from './Population';
-import { random40, smallSquare, createCircularPolygon } from './data';
+import { random30, smallSquare, createCircularPolygon } from './data';
 import {
   getCanvasesAndContexts,
   clearCanvas,
@@ -32,6 +32,7 @@ import {
 
 // FORGIVE THIS GLOBAL VARIABLE
 const defaultSeed = createCircularPolygon(15);
+// const defaultSeed = random30;
 // const defaultSeed = smallSquare;
 
 firstInit(); // only thing this file actually does on load

@@ -1,9 +1,7 @@
 import Individual from './Individual';
 
-// generate random set of points based on canvas size
 // create new Population of size x
-// this population's initial pop is an array with the points, shuffled
-
+// this population's initial pop is an array with shuffled versions of seed
 export default function Population (size, seed, pC, pM) {
   this.currentPop = this.generate(size, seed);
   this.currentFitnesses = this.currentPop.map(individual => individual.getFitness());
@@ -13,12 +11,10 @@ export default function Population (size, seed, pC, pM) {
   this.fittestEver = this.getFittest();
 }
 
-// all members of a population MUST HAVE SAME LOCATIONS IN DNA
+// all members of a population MUST HAVE SAME SET OF LOCATIONS IN DNA
 // thus generate a pop by shuffling a single set of locations
 Population.prototype.generate = function (size, seed) {
   return Array(size).fill(null).map( () => new Individual(shuffle(seed)) );
-  // return Array(size).fill(null).map( () => new Individual(seed) );
-
 };
 
 // creates next generation for a population
@@ -114,16 +110,16 @@ function rotate (array, index) {
   return [...array.slice(offset), ...array.slice(0, offset)];
 }
 
-// Fisher-yates shuffle... but on a copy
+// Fisher-yates shuffle...
 function shuffle(array) {
-    var rand, index = -1,
-        length = array.length,
-        result = Array(length);
-    while (++index < length) {
-        rand = Math.floor(Math.random() * (index + 1));
-        result[index] = result[rand];
-        result[rand] = array[index];
-    }
-    return result;
+  let rand, index = -1,
+      length = array.length,
+      result = Array(length);
+  while (++index < length) {
+    rand = Math.floor(Math.random() * (index + 1));
+    result[index] = result[rand];
+    result[rand] = array[index];
+  }
+  return result;
 }
 
