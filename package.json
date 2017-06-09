@@ -2,10 +2,9 @@
   "name": "techtalk",
   "version": "1.0.0",
   "description": "",
-  "main": "SingleChildPop.js",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:production": "node app.js",
     "start:dev": "webpack -w & nodemon -e html,css,js app.js",
     "start": "npm run start:dev"
   },

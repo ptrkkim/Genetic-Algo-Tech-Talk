@@ -1,7 +1,17 @@
+INSTRUCTIONS:
+  
+  npm install, npm start
+  localhost:3000
+
+  If you play with the config sliders, you MUST press 'clear and reset' for changes
+  to take effect
+
+*******************************************
+
   SHOWCASE:
     Population: GENETIC DIVERSITY
-      population 10, cross .5, mutation 0    // bad, low diversity, local max problem
-      population 100, cross .5, mutation 0   // good, high genetic diversity
+      population 10, cross .3, mutation 0    // bad, low diversity, local max problem
+      population 100, cross .3, mutation 0   // good, high genetic diversity
 
     Crossover: 
       population 50, cross 0, mutation 0     // bad, local max problem
@@ -12,6 +22,7 @@
     Mutation:
       population 100, cross .3, mutation 0   // very nice solver
       population 100, cross .3, mutation 100 // a terrible, terrible solver 
+
 *******************************************
 
 Order of operations:
@@ -29,20 +40,6 @@ Order of operations:
 
 *******************************************
 
-PRESENTATION OUTLINE
-  WHAT IS A GENETIC ALGORITHM?
-
-  HOW DOES IT WORK?
-    1.  First, decide how to represent individual solutions to a problem as 'DNA'
-    2.  Generate a 'population' of possible solutions
-    3.  Randomly select pairs of solutions from this population to 'mate'
-    4.  Randomly 'mutate' the child solutions
-    5.  Repeat 2-4 until you have a new population, or 'generation' of child solutions
-
-    With a well-implemented algorithm
-
-    You're probably wondering- how do our solutions get better over time if we 
-
   CROSSOVER
     low : increases convergence speed (fittest are likely to survive as-is to next gen)
           decreases exploratory power (easy to get stuck in local optimum)
@@ -58,11 +55,3 @@ PRESENTATION OUTLINE
  
     low : rely on fit-biased selection and crossover (increase convergence speed)
     high: slower (increasingly impossible) convergence, increase exploratory power
-
-  END
-    optimization tweaks (elitism)
-    use cases: 
-      mario, teaching bots to walk, 
-      engineering hardware (vibration damping supports that look like leg bones)
-  
-ultimate tradeoff: fast convergence vs. exploratory power

@@ -143,8 +143,8 @@ function getInputElements () {
 function setDefaultConfig () {
   const { intervalIn, popSizeIn, pCrossIn, pMutateIn } = getInputElements();
 
-  intervalIn.value = 0;
+  intervalIn.value = 150;
   popSizeIn.value  = 50;
-  pCrossIn.value   = 0.5;
-  pMutateIn.value  = 0.01;
+  pCrossIn.value   = 0.3;
+  pMutateIn.value  = 0.1;
 }
