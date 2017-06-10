@@ -3,8 +3,11 @@ INSTRUCTIONS:
   npm install, npm start
   localhost:3000
 
+
   If you play with the config sliders, you MUST press 'clear and reset' for changes
   to take effect
+
+  Exception: 'step interval' can be changed without resetting by hitting pause + play
 
 *******************************************
 
