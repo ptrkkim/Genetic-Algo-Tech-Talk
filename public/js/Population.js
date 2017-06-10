@@ -1,4 +1,4 @@
-import Individual from './Individual';
+import Individual from './individual';
 
 // create new Population of size x
 // this population's initial pop is an array with shuffled versions of seed

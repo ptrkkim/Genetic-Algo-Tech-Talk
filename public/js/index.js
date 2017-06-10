@@ -18,7 +18,7 @@
     LOW PRIO: label fitness graph
 */
 
-import Population from './Population';
+import Population from './population';
 import { random30, smallSquare, createCircularPolygon } from './data';
 import {
   getCanvasesAndContexts,

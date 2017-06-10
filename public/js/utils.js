@@ -1,5 +1,5 @@
 // just to declutter big picture logic in index/population/individual
-import Individual from './Individual';
+import Individual from './individual';
 
 export const clearCanvas = (canvas) => {
   const ctx = canvas.getContext('2d');
