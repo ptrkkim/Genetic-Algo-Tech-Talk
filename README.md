@@ -2,6 +2,8 @@
 
 Demo for Fullstack Academy tech talk that visualizes solving the Traveling Salesperson Problem with a genetic algorithm.
 
+[Watch the talk!](https://www.youtube.com/watch?v=XP8R0yzAbdo) 
+
 ## The algorithm
 
 Check out population.js and individual.js for the bulk of the algorithm.
