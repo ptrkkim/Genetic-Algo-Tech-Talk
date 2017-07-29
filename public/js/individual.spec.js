@@ -4,7 +4,8 @@ const mockMathRandom = jest.fn(() => 0.5);
 
 describe('An individual route', () => {
   const cities = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }];
-  const reversed = [{ x: 2, y: 2 }, { x: 1, y: 1 }, { x: 0, y: 0 }];
+  const mathRandomMock = jest.fn().mockReturnValue(0);
+  global.Math.random = mathRandomMock;
 
   it('initializes properly', () => {
     const empty = new Individual();
@@ -17,21 +18,26 @@ describe('An individual route', () => {
   })
 
   describe('mutates properly', () => {
-    const testRoute1 = new Individual(cities);
-    const testRoute2 = new Individual(reversed);
-
+    const testRoute = new Individual(cities);
 
     it('returns a completely new individual', () => {
-      const mutated1 = testRoute1.mutate(0); // no swaps
-      expect(mutated1).not.toBe(testRoute1);
+      const mutated1 = testRoute.mutate(0); // no swaps
+      expect(mutated1).not.toBe(testRoute);
+      expect(mutated1).toEqual(testRoute);
     });
 
     it('mutates by swapping cities in the route', () => {
 
+      const mutated1 = testRoute.mutate(1); // swap every time
+      const expected = [{x: 2, y: 2}, {x: 0, y: 0}, {x: 1, y: 1}];
+      expect(mutated1.dna).toEqual(expected);
     });
 
     it('only mutates if mutation probability is above threshold', () => {
-
+      const shouldBeMutated = testRoute.mutate(1);
+      const shouldNotBeMutated = testRoute.mutate(0);
+      expect(shouldBeMutated).not.toEqual(testRoute);
+      expect(shouldNotBeMutated).toEqual(testRoute);
     });
   });
 
