@@ -1,9 +1,8 @@
-import Individual, { getDistance } from './individual'; 
-
-const mockMathRandom = jest.fn(() => 0.5);
+import Individual, { getDistance } from './individual';
 
 describe('An individual route', () => {
-  const cities = [{ x: 0, y: 0 }, { x: 1, y: 1 }, { x: 2, y: 2 }];
+  const cities = [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }];
+  const testRoute = new Individual(cities);
   const mathRandomMock = jest.fn().mockReturnValue(0);
   global.Math.random = mathRandomMock;
 
@@ -18,7 +17,6 @@ describe('An individual route', () => {
   })
 
   describe('mutates properly', () => {
-    const testRoute = new Individual(cities);
 
     it('returns a completely new individual', () => {
       const mutated1 = testRoute.mutate(0); // no swaps
@@ -27,9 +25,8 @@ describe('An individual route', () => {
     });
 
     it('mutates by swapping cities in the route', () => {
-
       const mutated1 = testRoute.mutate(1); // swap every time
-      const expected = [{x: 2, y: 2}, {x: 0, y: 0}, {x: 1, y: 1}];
+      const expected = [{x: 0, y: 2}, {x: 0, y: 0}, {x: 0, y: 1}];
       expect(mutated1.dna).toEqual(expected);
     });
 
@@ -42,34 +39,28 @@ describe('An individual route', () => {
   });
 
   describe('calculates fitness properly', () => {
-    it('calculates distance to visit all cities and return to origin', () => {
+    const getDistanceMock = jest.fn(getDistance);
 
+    beforeEach(() => {
+      getDistanceMock.mockClear();
+    });
+
+    it('calculates distance to visit all cities and return to origin', () => {
+      const expectedDistance = 4;
+      expect(getDistanceMock(testRoute.dna)).toBe(expectedDistance);
     });
 
     it('high distances have low fitness scores and vice-versa', () => {
+      const longRoute = new Individual(cities.concat([{x: 0, y: 3}]));
+      Individual.prototype.getFitness = function() { return 1 / getDistanceMock(this.dna) };
 
+      const shortFitness = testRoute.getFitness();
+      const longFitness = longRoute.getFitness();
+      expect(getDistanceMock).toHaveBeenCalledWith(testRoute.dna);
+      expect(getDistanceMock).toHaveBeenCalledWith(longRoute.dna);
+      expect(shortFitness).toBeGreaterThan(longFitness);
+      expect(shortFitness).toBe(1 / 4);
+      expect(longFitness).toBe(1 / 6);
     });
   })
 });
-
-// TSP requires all chromosomes to share same unique set of routes
-// therefore we have two options:
-//   1. only SWAP locations to mutate, always producing valid routes
-//   2. insert/delete random locations, cull invalid routes post-hoc (nahhh)
-
-Individual.prototype.mutate = function (probMutate) {
-  const mutatedRoute = this.dna.slice();
-  for (let index = 0; index < mutatedRoute.length; index++) {
-    if (Math.random() < probMutate) {
-
-      const randInd = Math.floor(Math.random() * mutatedRoute.length);
-      // if (randInd === index) return this.mutate(probMutate);
-
-      const tempLoc = mutatedRoute[randInd];
-      mutatedRoute[randInd] = mutatedRoute[index];
-      mutatedRoute[index] = tempLoc;
-    }
-  }
-
-  return new Individual(mutatedRoute);
-};
