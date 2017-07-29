@@ -1,0 +1,10 @@
+{
+  "extends": "fullstack",
+  "rules": {
+    "id-length": "off"
+  },
+  "env": {
+    "node": true,
+    "jest": true
+  }
+}

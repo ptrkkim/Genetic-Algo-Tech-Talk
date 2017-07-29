@@ -111,7 +111,7 @@ function rotate (array, index) {
 }
 
 // Fisher-yates shuffle...
-function shuffle(array) {
+export function shuffle(array) {
   let rand, index = -1,
       length = array.length,
       result = Array(length);
