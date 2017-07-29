@@ -1,6 +1,8 @@
 import { drawLocations, drawRoute } from './utils';
 
-export default function Individual (dna) {
+export { Individual as default, getDistance };
+
+function Individual (dna) {
   this.dna = dna || [];
 }
 
@@ -27,7 +29,7 @@ Individual.prototype.mutate = function (probMutate) {
 };
 
 Individual.prototype.getFitness = function () {
-  return 1 / getDistance(this.dna);
+  return 1 / getDistance(this.dna); 
 };
 
 Individual.prototype.draw = function (ctx) {
@@ -41,7 +43,7 @@ function getDistance (route) {
     const distToAdd = Math.hypot(location.x - prev.x, location.y - prev.y);
     prev = location;
     return totalDist + distToAdd;
-  }, 0);
+  }, 0); 
 
   // make circular
   const first = route[0];
