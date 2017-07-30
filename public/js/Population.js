@@ -14,7 +14,7 @@ export default function Population (size, seed, pC, pM) {
 // all members of a population MUST HAVE SAME SET OF LOCATIONS IN DNA
 // thus generate a pop by shuffling a single set of locations
 Population.prototype.generate = function (size, seed) {
-  return Array(size).fill(null).map( () => new Individual(shuffle(seed)) );
+  return Array(size).fill(null).map( () => new Individual(shuffle(seed, fisherSwap)) );
 };
 
 // creates next generation for a population
@@ -111,15 +111,18 @@ export function rotate (array, index) {
 }
 
 // Fisher-yates shuffle...
-export function shuffle(array) {
-  let rand, index = -1,
-      length = array.length,
-      result = Array(length);
-  while (++index < length) {
-    rand = Math.floor(Math.random() * (index + 1));
-    result[index] = result[rand];
-    result[rand] = array[index];
+export function shuffle(array, swapper) {
+  let index = array.length;
+  while (index !== 0) {
+    index -= 1;
+    swapper(array, index);
   }
-  return result;
+  return array;
 }
 
+export function fisherSwap(array, index) {
+  const rand = Math.floor(Math.random() * (index + 1));
+  const temp = array[index];
+  array[index] = array[rand];
+  array[rand] = temp;
+}

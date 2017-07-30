@@ -3,7 +3,7 @@ import { drawLocations, drawRoute } from './utils';
 export { Individual as default, getDistance };
 
 function Individual (dna) {
-  this.dna = dna || [];
+  this.dna = dna ? dna.slice() : [];
 }
 
 // TSP requires all chromosomes to share same unique set of routes
