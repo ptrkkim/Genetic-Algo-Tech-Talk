@@ -14,7 +14,7 @@ export default function Population (size, seed, pC, pM) {
 // all members of a population MUST HAVE SAME SET OF LOCATIONS IN DNA
 // thus generate a pop by shuffling a single set of locations
 Population.prototype.generate = function (size, seed) {
-  return Array(size).fill(null).map( () => new Individual(shuffle(seed)) );
+  return Array(size).fill(null).map( () => new Individual(shuffle(seed, fisherSwap)) );
 };
 
 // creates next generation for a population
@@ -84,7 +84,7 @@ Population.prototype.getFittest = function () {
 
 // due to genome being a route, should exchange segments while maintaining order
 // read into 'ordered crossover'
-function orderedCross (startInd, endInd, segParent, otherParent) {
+export function orderedCross (startInd, endInd, segParent, otherParent) {
   const childDNA  = segParent.dna.slice(startInd, endInd);
   const dnaLength = segParent.dna.length;
 
@@ -101,25 +101,28 @@ function orderedCross (startInd, endInd, segParent, otherParent) {
   return rotate(childDNA, startInd);
 }
 
-function sameLocation (location1, location2) {
+export function sameLocation (location1, location2) {
   return location1.x === location2.x && location1.y === location2.y;
 }
 
-function rotate (array, index) {
+export function rotate (array, index) {
   const offset = array.length - index;
   return [...array.slice(offset), ...array.slice(0, offset)];
 }
 
 // Fisher-yates shuffle...
-export function shuffle(array) {
-  let rand, index = -1,
-      length = array.length,
-      result = Array(length);
-  while (++index < length) {
-    rand = Math.floor(Math.random() * (index + 1));
-    result[index] = result[rand];
-    result[rand] = array[index];
+export function shuffle(array, swapper) {
+  let index = array.length;
+  while (index !== 0) {
+    index -= 1;
+    swapper(array, index);
   }
-  return result;
+  return array;
 }
 
+export function fisherSwap(array, index) {
+  const rand = Math.floor(Math.random() * (index + 1));
+  const temp = array[index];
+  array[index] = array[rand];
+  array[rand] = temp;
+}
