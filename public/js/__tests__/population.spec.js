@@ -1,5 +1,5 @@
-import Population, * as pop from './population';
-import Individual from './individual';
+import Population, * as pop from '../population';
+import Individual from '../individual';
 
 describe('A population of routes', () => {
   const cities = [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }];

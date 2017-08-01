@@ -1,6 +1,10 @@
 {
   "name": "genetictechtalk",
   "version": "1.0.0",
+  "engines": {
+    "node": "7.10.1",
+    "npm": "4.2.0"
+  },
   "description": "",
   "main": "app.js",
   "scripts": {

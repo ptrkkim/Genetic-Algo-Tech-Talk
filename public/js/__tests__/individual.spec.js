@@ -1,4 +1,4 @@
-import Individual, { getDistance } from './individual';
+import Individual, { getDistance } from '../individual';
 
 describe('An individual route', () => {
   const cities = [{ x: 0, y: 0 }, { x: 0, y: 1 }, { x: 0, y: 2 }];
