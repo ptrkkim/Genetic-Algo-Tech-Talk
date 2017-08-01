@@ -22,6 +22,6 @@ app.use(function (err, req, res, next) {
 });
 
 const PORT = 3000;
-app.listen(PORT, function () {
-  console.log('The server is listening closely on', PORT);
+app.listen(process.env.PORT || PORT, function () {
+  console.log(`The server is listening closely on', ${process.env.PORT || PORT}`);
 });
