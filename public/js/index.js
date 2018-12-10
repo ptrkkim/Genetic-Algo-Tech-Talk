@@ -18,7 +18,7 @@
     LOW PRIO: label fitness graph
 */
 
-import Population from './population';
+import Population from './Population';
 import { random30, smallSquare, createCircularPolygon } from './data';
 import {
   getCanvasesAndContexts,
@@ -37,7 +37,7 @@ const defaultSeed = createCircularPolygon(15);
 
 firstInit(); // only thing this file actually does on load
 
-function firstInit () {
+function firstInit() {
   const { gCanvas, gCtx, fCanvas, fCtx, bCanvas, bCtx } = getCanvasesAndContexts();
   // DO ONCE!! shift origin to bottom left, Y axis draws up instead of down
   gCtx.transform(1, 0, 0, -1, 0, gCanvas.height);
@@ -48,26 +48,26 @@ function firstInit () {
   restart();
 }
 
-function initControls () {
+function initControls() {
   setDefaultConfig();
   linkOutputElements(getInputElements());
 }
 
-function restart () {
+function restart() {
   const population = newCohort(getInputElements());
   initCanvas(population);
 }
 
 // generate new cohort based on configured controls
-function newCohort ({ popSizeIn, pCrossIn, pMutateIn }) {
-  const size    = +popSizeIn.value;
-  const pCross  = +pCrossIn.value;
+function newCohort({ popSizeIn, pCrossIn, pMutateIn }) {
+  const size = +popSizeIn.value;
+  const pCross = +pCrossIn.value;
   const pMutate = +pMutateIn.value;
   const resized = fitRouteToCanvas(defaultSeed, 'gCanvas');
   return new Population(size, resized, pCross, pMutate);
 }
 
-function initCanvas (population) {
+function initCanvas(population) {
   const { gCanvas, fCanvas, bCanvas, gCtx } = getCanvasesAndContexts();
 
   const tickingFunc = makeTicker(population);
@@ -81,18 +81,18 @@ function initCanvas (population) {
   drawLocations(gCtx, seed);
 }
 
-function initButtons (tick) {
-  const step    = document.getElementById('step');
-  const play    = document.getElementById('play');
-  const pause   = document.getElementById('pause');
-  const reset   = document.getElementById('reset');
-  const config  = document.getElementById('config');
+function initButtons(tick) {
+  const step = document.getElementById('step');
+  const play = document.getElementById('play');
+  const pause = document.getElementById('pause');
+  const reset = document.getElementById('reset');
+  const config = document.getElementById('config');
   const buttons = { step, play, pause, reset, config };
 
   addButtonListeners(tick, buttons);
 }
 
-function addButtonListeners (tick, { step, play, pause, reset, config }) {
+function addButtonListeners(tick, { step, play, pause, reset, config }) {
   let tickInterval;
   const playTicking = () => {
     if (tickInterval) return;
@@ -119,7 +119,7 @@ function addButtonListeners (tick, { step, play, pause, reset, config }) {
   config.addEventListener('click', setDefaultConfig);
 }
 
-function linkOutputElements (controls) {
+function linkOutputElements(controls) {
   Object.values(controls).forEach(input => {
     const outputId = `${input.id.slice(0, -2)}Out`;
     const output = document.getElementById(outputId);
@@ -131,20 +131,20 @@ function linkOutputElements (controls) {
   });
 }
 
-function getInputElements () {
+function getInputElements() {
   const intervalIn = document.getElementById('intervalIn');
-  const popSizeIn  = document.getElementById('popSizeIn');
-  const pCrossIn   = document.getElementById('pCrossIn');
-  const pMutateIn  = document.getElementById('pMutateIn');
+  const popSizeIn = document.getElementById('popSizeIn');
+  const pCrossIn = document.getElementById('pCrossIn');
+  const pMutateIn = document.getElementById('pMutateIn');
   return { intervalIn, popSizeIn, pCrossIn, pMutateIn };
 }
 
 // who doesn't love some magic numbers
-function setDefaultConfig () {
+function setDefaultConfig() {
   const { intervalIn, popSizeIn, pCrossIn, pMutateIn } = getInputElements();
 
   intervalIn.value = 150;
-  popSizeIn.value  = 50;
-  pCrossIn.value   = 0.3;
-  pMutateIn.value  = 0.1;
+  popSizeIn.value = 50;
+  pCrossIn.value = 0.3;
+  pMutateIn.value = 0.1;
 }
